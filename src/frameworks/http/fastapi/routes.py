@@ -43,7 +43,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
 )
 def create_order(
     body: CreateOrderRequestSchema,
-    controller: CreateOrderController = Depends(get_controller),
+    controller: CreateOrderController = Depends(get_controller),  # noqa: B008
 ) -> CreateOrderResponseSchema:
     """
     Create a new order for a customer.
@@ -56,7 +56,7 @@ def create_order(
     try:
         controller.handle(raw)
     except ControllerValidationError as exc:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc))  # noqa: B904
 
     # The presenter was populated by the interactor inside controller.handle()
     # We access it through the controller's internal interactor presenter.

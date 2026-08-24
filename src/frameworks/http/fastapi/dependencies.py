@@ -57,7 +57,7 @@ def get_presenter() -> JsonPresenter:
 
 
 def get_interactor(
-    presenter: JsonPresenter = Depends(get_presenter),
+    presenter: JsonPresenter = Depends(get_presenter),  # noqa: B008
 ) -> CreateOrderInteractor:
     return CreateOrderInteractor(
         uow=_UOW,
@@ -67,7 +67,7 @@ def get_interactor(
 
 
 def get_controller(
-    interactor: CreateOrderInteractor = Depends(get_interactor),
+    interactor: CreateOrderInteractor = Depends(get_interactor),  # noqa: B008
 ) -> CreateOrderController:
     ctrl = CreateOrderController(interactor)
     # Expose the presenter on the controller so the route can read the view.

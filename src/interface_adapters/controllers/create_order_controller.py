@@ -75,7 +75,7 @@ class CreateOrderController:
         try:
             unit_price = Decimal(str(raw_price))
         except (InvalidOperation, TypeError):
-            raise ControllerValidationError(
+            raise ControllerValidationError(  # noqa: B904
                 f"{prefix}.unit_price must be a valid decimal number",
             )
 

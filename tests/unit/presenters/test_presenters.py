@@ -13,13 +13,13 @@ from src.use_cases.ports import CreateOrderResponseModel
 
 
 def _response_model(**kwargs):
-    defaults = dict(
-        order_id=uuid4(),
-        customer_id="cust-1",
-        status="CREATED",
-        total=Decimal("25.50"),
-        item_count=2,
-    )
+    defaults = {
+        "order_id": uuid4(),
+        "customer_id": "cust-1",
+        "status": "CREATED",
+        "total": Decimal("25.50"),
+        "item_count": 2,
+    }
     return CreateOrderResponseModel(**{**defaults, **kwargs})
 
 
