@@ -1,14 +1,14 @@
 """SQLAlchemy implementation of the OrderRepository port."""
+
 from __future__ import annotations
 
-from typing import List, Optional
 from uuid import UUID
 
 from sqlalchemy.orm import Session
 
 from src.entities.order import Order, OrderItem, OrderStatus
-from src.use_cases.ports import OrderRepository
 from src.frameworks.db.sqlalchemy.models import OrderItemModel, OrderModel
+from src.use_cases.ports import OrderRepository
 
 
 class SqlAlchemyOrderGateway(OrderRepository):
@@ -36,19 +36,15 @@ class SqlAlchemyOrderGateway(OrderRepository):
                     )
                     for i in order.items
                 ],
-            )
+            ),
         )
 
-    def get(self, order_id: UUID) -> Optional[Order]:
+    def get(self, order_id: UUID) -> Order | None:
         model = self._session.get(OrderModel, order_id)
         return self._to_domain(model) if model else None
 
-    def list_by_customer(self, customer_id: str) -> List[Order]:
-        rows = (
-            self._session.query(OrderModel)
-            .filter(OrderModel.customer_id == customer_id)
-            .all()
-        )
+    def list_by_customer(self, customer_id: str) -> list[Order]:
+        rows = self._session.query(OrderModel).filter(OrderModel.customer_id == customer_id).all()
         return [self._to_domain(r) for r in rows]
 
     @staticmethod

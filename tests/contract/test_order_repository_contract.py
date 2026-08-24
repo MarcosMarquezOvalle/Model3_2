@@ -3,6 +3,9 @@ Contract tests for the OrderRepository port.
 Runs the same assertions against every gateway adapter.
 Adding a new adapter = one new entry in the fixture parameters.
 """
+
+from __future__ import annotations
+
 from decimal import Decimal
 from uuid import uuid4
 

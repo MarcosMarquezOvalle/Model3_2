@@ -1,8 +1,9 @@
 """In-memory Unit of Work — no real transactions, ideal for fast tests."""
+
 from __future__ import annotations
 
-from src.use_cases.ports import UnitOfWork
 from src.frameworks.db.in_memory.order_gateway import InMemoryOrderGateway
+from src.use_cases.ports import UnitOfWork
 
 
 class InMemoryUnitOfWork(UnitOfWork):
@@ -17,7 +18,7 @@ class InMemoryUnitOfWork(UnitOfWork):
         self.orders = InMemoryOrderGateway()
         self._committed = False
 
-    def __enter__(self) -> "InMemoryUnitOfWork":
+    def __enter__(self) -> InMemoryUnitOfWork:
         self._committed = False
         return self
 

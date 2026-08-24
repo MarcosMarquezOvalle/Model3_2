@@ -1,12 +1,13 @@
 """SQLAlchemy implementation of the UnitOfWork port."""
+
 from __future__ import annotations
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from src.use_cases.ports import UnitOfWork
-from src.frameworks.db.sqlalchemy.order_gateway import SqlAlchemyOrderGateway
 from src.frameworks.db.sqlalchemy.models import Base
+from src.frameworks.db.sqlalchemy.order_gateway import SqlAlchemyOrderGateway
+from src.use_cases.ports import UnitOfWork
 
 
 class SqlAlchemyUnitOfWork(UnitOfWork):
@@ -25,7 +26,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
     def __init__(self, session_factory: sessionmaker) -> None:
         self._factory = session_factory
 
-    def __enter__(self) -> "SqlAlchemyUnitOfWork":
+    def __enter__(self) -> SqlAlchemyUnitOfWork:
         self._session: Session = self._factory()
         self.orders = SqlAlchemyOrderGateway(self._session)
         return self
@@ -44,6 +45,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
 # ---------------------------------------------------------------------------
 # Convenience factory for SQLite (tests) and any SQLAlchemy-compatible URL
 # ---------------------------------------------------------------------------
+
 
 def build_sqlite_uow(url: str = "sqlite:///:memory:") -> SqlAlchemyUnitOfWork:
     engine = create_engine(url)

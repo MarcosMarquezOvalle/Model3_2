@@ -5,9 +5,8 @@ Converts the use-case output into a human-readable string suitable for a
 terminal. Demonstrates that the same use case can be driven by completely
 different presenters without any change to the interactor.
 """
-from __future__ import annotations
 
-from typing import Optional
+from __future__ import annotations
 
 from src.use_cases.ports import CreateOrderResponseModel, OutputBoundary
 
@@ -16,7 +15,7 @@ class CliPresenter(OutputBoundary):
     """Produces a plain-text view model for terminal output."""
 
     def __init__(self) -> None:
-        self._output: Optional[str] = None
+        self._output: str | None = None
         self._exit_code: int = 0
 
     @property

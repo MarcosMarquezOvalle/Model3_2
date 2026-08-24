@@ -1,13 +1,15 @@
 """Unit tests for JSON and CLI presenters — no use case needed."""
+
+from __future__ import annotations
+
 from decimal import Decimal
 from uuid import uuid4
 
 import pytest
 
-from src.use_cases.ports import CreateOrderResponseModel
-from src.interface_adapters.presenters.json_presenter import JsonPresenter
 from src.interface_adapters.presenters.cli_presenter import CliPresenter
-from src.entities.exceptions import DomainError
+from src.interface_adapters.presenters.json_presenter import JsonPresenter
+from src.use_cases.ports import CreateOrderResponseModel
 
 
 def _response_model(**kwargs):
@@ -24,6 +26,7 @@ def _response_model(**kwargs):
 # ---------------------------------------------------------------------------
 # JsonPresenter
 # ---------------------------------------------------------------------------
+
 
 class TestJsonPresenter:
     def test_success_view_has_201_and_data(self):
@@ -64,6 +67,7 @@ class TestJsonPresenter:
 # ---------------------------------------------------------------------------
 # CliPresenter
 # ---------------------------------------------------------------------------
+
 
 class TestCliPresenter:
     def test_success_exit_code_is_0(self):

@@ -8,6 +8,7 @@ concurrent requests.
 The UnitOfWork is also per-request; in a real service you would configure it
 from environment variables or an app-level settings object.
 """
+
 from __future__ import annotations
 
 import os
@@ -15,12 +16,12 @@ import os
 from fastapi import Depends
 
 from src.frameworks.db.in_memory.unit_of_work import InMemoryUnitOfWork
-from src.frameworks.db.sqlalchemy.unit_of_work import build_sqlite_uow, SqlAlchemyUnitOfWork
+from src.frameworks.db.sqlalchemy.unit_of_work import build_sqlite_uow
 from src.frameworks.notifications.http_simulator import HttpNotificationSimulatorGateway
 from src.interface_adapters.controllers.create_order_controller import CreateOrderController
 from src.interface_adapters.presenters.json_presenter import JsonPresenter
 from src.use_cases.create_order.interactor import CreateOrderInteractor
-from src.use_cases.ports import UnitOfWork, NotificationGateway
+from src.use_cases.ports import NotificationGateway, UnitOfWork
 
 # ---------------------------------------------------------------------------
 # Singletons (created once at startup, shared across requests)
@@ -28,10 +29,12 @@ from src.use_cases.ports import UnitOfWork, NotificationGateway
 
 _DB_URL: str = os.getenv("DATABASE_URL", "")
 
+
 def _build_uow() -> UnitOfWork:
     if _DB_URL:
-        return build_sqlite_uow(_DB_URL)   # swap for postgres URL in prod
+        return build_sqlite_uow(_DB_URL)  # swap for postgres URL in prod
     return InMemoryUnitOfWork()
+
 
 _UOW: UnitOfWork = _build_uow()
 
@@ -39,13 +42,14 @@ _NOTIFIER: NotificationGateway = HttpNotificationSimulatorGateway(
     endpoint=os.getenv(
         "NOTIFICATION_WEBHOOK_URL",
         "https://notifications.example.com/webhooks/orders",
-    )
+    ),
 )
 
 
 # ---------------------------------------------------------------------------
 # Per-request factories
 # ---------------------------------------------------------------------------
+
 
 def get_presenter() -> JsonPresenter:
     """Fresh presenter per request — holds per-request view state."""

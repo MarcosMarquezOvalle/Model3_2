@@ -4,18 +4,20 @@ Layer 2 – Use Cases: Ports
 Abstract interfaces declared by the use-case layer that outer layers must
 implement. Nothing here imports SQLAlchemy, requests, Flask, etc.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from dataclasses import dataclass
+from decimal import Decimal
 from uuid import UUID
 
 from src.entities.order import Order
 
-
 # ---------------------------------------------------------------------------
 # Repository port
 # ---------------------------------------------------------------------------
+
 
 class OrderRepository(ABC):
     """Persistence contract for Order aggregates."""
@@ -24,15 +26,16 @@ class OrderRepository(ABC):
     def add(self, order: Order) -> None: ...
 
     @abstractmethod
-    def get(self, order_id: UUID) -> Optional[Order]: ...
+    def get(self, order_id: UUID) -> Order | None: ...
 
     @abstractmethod
-    def list_by_customer(self, customer_id: str) -> List[Order]: ...
+    def list_by_customer(self, customer_id: str) -> list[Order]: ...
 
 
 # ---------------------------------------------------------------------------
 # Unit of Work port
 # ---------------------------------------------------------------------------
+
 
 class UnitOfWork(ABC):
     """
@@ -44,9 +47,10 @@ class UnitOfWork(ABC):
             uow.orders.add(order)
             uow.commit()
     """
+
     orders: OrderRepository  # set by the concrete implementation
 
-    def __enter__(self) -> "UnitOfWork":
+    def __enter__(self) -> UnitOfWork:
         return self
 
     def __exit__(self, *exc) -> None:
@@ -64,6 +68,7 @@ class UnitOfWork(ABC):
 # Notification port
 # ---------------------------------------------------------------------------
 
+
 class NotificationGateway(ABC):
     """Contract for notifying external systems (webhook, queue, email…)."""
 
@@ -75,6 +80,7 @@ class NotificationGateway(ABC):
 # Output boundary (Presenter port)
 # ---------------------------------------------------------------------------
 
+
 class OutputBoundary(ABC):
     """
     Use cases depend on this interface to hand results back to the caller.
@@ -84,7 +90,7 @@ class OutputBoundary(ABC):
     """
 
     @abstractmethod
-    def present_success(self, response_model: "CreateOrderResponseModel") -> None: ...
+    def present_success(self, response_model: CreateOrderResponseModel) -> None: ...
 
     @abstractmethod
     def present_error(self, error: Exception) -> None: ...
@@ -94,9 +100,6 @@ class OutputBoundary(ABC):
 # Response model (plain data produced by the use case)
 # ---------------------------------------------------------------------------
 
-from dataclasses import dataclass
-from decimal import Decimal
-
 
 @dataclass(frozen=True)
 class CreateOrderResponseModel:
@@ -104,6 +107,7 @@ class CreateOrderResponseModel:
     Plain data object produced by the use case and handed to the presenter.
     No formatting, no framework types.
     """
+
     order_id: UUID
     customer_id: str
     status: str

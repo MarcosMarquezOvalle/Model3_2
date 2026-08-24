@@ -5,13 +5,13 @@ Enterprise business rules that are completely independent of any framework,
 database, or delivery mechanism. They contain the highest-level rules and
 have no outward dependencies.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import List
 from uuid import UUID, uuid4
 
 
@@ -42,7 +42,7 @@ class OrderItem:
 class Order:
     id: UUID
     customer_id: str
-    items: List[OrderItem]
+    items: list[OrderItem]
     status: OrderStatus = OrderStatus.CREATED
     created_at: datetime = field(default_factory=datetime.utcnow)
 
@@ -73,5 +73,5 @@ class Order:
     # Factory
     # ------------------------------------------------------------------ #
     @classmethod
-    def create(cls, customer_id: str, items: List[OrderItem]) -> "Order":
+    def create(cls, customer_id: str, items: list[OrderItem]) -> Order:
         return cls(id=uuid4(), customer_id=customer_id, items=items)

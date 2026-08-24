@@ -3,6 +3,9 @@ Contract tests for the UnitOfWork port.
 Verifies that every UoW implementation honours the transactional contract:
 commit makes data visible, rollback (or exception) leaves nothing.
 """
+
+from __future__ import annotations
+
 from decimal import Decimal
 
 import pytest
@@ -11,8 +14,8 @@ from sqlalchemy.orm import sessionmaker
 
 from src.entities.order import Order, OrderItem
 from src.frameworks.db.in_memory.unit_of_work import InMemoryUnitOfWork
-from src.frameworks.db.sqlalchemy.unit_of_work import SqlAlchemyUnitOfWork
 from src.frameworks.db.sqlalchemy.models import Base
+from src.frameworks.db.sqlalchemy.unit_of_work import SqlAlchemyUnitOfWork
 
 
 def _make_order():

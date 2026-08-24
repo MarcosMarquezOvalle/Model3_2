@@ -1,4 +1,5 @@
 """SQLAlchemy 2.x ORM models — purely infrastructure, no domain logic."""
+
 from __future__ import annotations
 
 import uuid
@@ -22,8 +23,10 @@ class OrderModel(Base):
     status: Mapped[str] = mapped_column(String(32), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
-    items: Mapped[list["OrderItemModel"]] = relationship(
-        back_populates="order", cascade="all, delete-orphan", lazy="selectin"
+    items: Mapped[list[OrderItemModel]] = relationship(
+        back_populates="order",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )
 
 
@@ -36,4 +39,4 @@ class OrderItemModel(Base):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
     unit_price: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
 
-    order: Mapped["OrderModel"] = relationship(back_populates="items")
+    order: Mapped[OrderModel] = relationship(back_populates="items")

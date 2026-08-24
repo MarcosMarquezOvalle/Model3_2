@@ -4,6 +4,7 @@ FastAPI application factory.
 Importing this module does NOT start the server — call ``create_app()`` or
 run via ``uvicorn src.frameworks.http.fastapi.app:create_app() --factory``.
 """
+
 from __future__ import annotations
 
 from fastapi import FastAPI

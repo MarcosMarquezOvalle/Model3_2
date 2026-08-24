@@ -12,21 +12,21 @@ Wiring path (outermost → innermost):
     ← JsonViewModel
   HTTP response
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from src.frameworks.http.fastapi.dependencies import get_controller
 from src.frameworks.http.fastapi.schemas import (
     CreateOrderRequestSchema,
     CreateOrderResponseSchema,
     ErrorResponseSchema,
 )
-from src.frameworks.http.fastapi.dependencies import get_controller
 from src.interface_adapters.controllers.create_order_controller import (
-    CreateOrderController,
     ControllerValidationError,
+    CreateOrderController,
 )
-from src.interface_adapters.presenters.json_presenter import JsonPresenter
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 

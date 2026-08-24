@@ -5,13 +5,13 @@ Simulates an outbound HTTP webhook without real network I/O. Implements
 NotificationGateway so it can be swapped for a real httpx/requests adapter
 behind the same interface.
 """
+
 from __future__ import annotations
 
 import logging
 import random
 import time
 from dataclasses import dataclass
-from typing import List
 
 from src.entities.order import Order
 from src.use_cases.ports import NotificationGateway
@@ -50,7 +50,7 @@ class HttpNotificationSimulatorGateway(NotificationGateway):
         self._endpoint = endpoint
         self._failure_rate = failure_rate
         self._latency = latency
-        self.captured: List[dict] = []   # inspectable in tests
+        self.captured: list[dict] = []  # inspectable in tests
 
     def notify_order_created(self, order: Order) -> None:
         payload = {
@@ -73,8 +73,13 @@ class HttpNotificationSimulatorGateway(NotificationGateway):
             time.sleep(self._latency)
 
         response = self._simulate_post()
-        self.captured.append({"endpoint": self._endpoint, "payload": payload,
-                               "status_code": response.status_code})
+        self.captured.append(
+            {
+                "endpoint": self._endpoint,
+                "payload": payload,
+                "status_code": response.status_code,
+            },
+        )
 
         if response.status_code >= 400:
             raise NotificationError(

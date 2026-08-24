@@ -1,4 +1,7 @@
 """Contract tests for the NotificationGateway port."""
+
+from __future__ import annotations
+
 from decimal import Decimal
 
 import pytest

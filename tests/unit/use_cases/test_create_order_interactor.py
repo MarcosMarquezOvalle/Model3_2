@@ -1,16 +1,16 @@
 """Unit tests for CreateOrderInteractor — backed by in-memory adapters."""
+
+from __future__ import annotations
+
 from decimal import Decimal
 
-import pytest
-
-from src.use_cases.create_order.interactor import CreateOrderInteractor
-from src.use_cases.create_order.request_model import CreateOrderRequest, OrderItemRequest
 from src.frameworks.db.in_memory.unit_of_work import InMemoryUnitOfWork
-from src.interface_adapters.presenters.json_presenter import JsonPresenter
 from src.frameworks.notifications.http_simulator import (
     HttpNotificationSimulatorGateway,
-    NotificationError,
 )
+from src.interface_adapters.presenters.json_presenter import JsonPresenter
+from src.use_cases.create_order.interactor import CreateOrderInteractor
+from src.use_cases.create_order.request_model import CreateOrderRequest, OrderItemRequest
 
 
 def _make_request(customer_id: str = "cust-1", qty: int = 2, price: str = "10.00"):
@@ -31,6 +31,7 @@ def build_interactor(uow=None, presenter=None, notifier=None):
 # ---------------------------------------------------------------------------
 # Happy path
 # ---------------------------------------------------------------------------
+
 
 def test_success_presents_201_with_correct_data():
     presenter = JsonPresenter()
@@ -60,6 +61,7 @@ def test_order_is_retrievable_after_commit():
 
     order_id_str = presenter.view.data["order_id"]
     from uuid import UUID
+
     order = uow.orders.get(UUID(order_id_str))
     assert order is not None
     assert order.customer_id == "cust-1"
@@ -68,6 +70,7 @@ def test_order_is_retrievable_after_commit():
 # ---------------------------------------------------------------------------
 # Domain validation
 # ---------------------------------------------------------------------------
+
 
 def test_empty_items_presents_error():
     presenter = JsonPresenter()
@@ -94,6 +97,7 @@ def test_negative_quantity_presents_error():
 # ---------------------------------------------------------------------------
 # Notification side-effect
 # ---------------------------------------------------------------------------
+
 
 def test_notification_is_sent_on_success():
     notifier = HttpNotificationSimulatorGateway(failure_rate=0.0)

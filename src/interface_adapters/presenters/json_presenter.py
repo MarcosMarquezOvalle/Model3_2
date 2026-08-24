@@ -8,10 +8,11 @@ The presenter holds the "view model" — the result of the last presentation
 — so the controller can call the interactor and then read ``presenter.view``
 in two separate steps (Uncle Bob's recommended split).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 from src.entities.exceptions import DomainError
 from src.use_cases.ports import CreateOrderResponseModel, OutputBoundary
@@ -21,15 +22,15 @@ from src.use_cases.ports import CreateOrderResponseModel, OutputBoundary
 class JsonViewModel:
     success: bool
     status_code: int
-    data: Optional[Dict[str, Any]] = None
-    error: Optional[str] = None
+    data: dict[str, Any] | None = None
+    error: str | None = None
 
 
 class JsonPresenter(OutputBoundary):
     """Produces a JSON-friendly view model."""
 
     def __init__(self) -> None:
-        self._view: Optional[JsonViewModel] = None
+        self._view: JsonViewModel | None = None
 
     @property
     def view(self) -> JsonViewModel:

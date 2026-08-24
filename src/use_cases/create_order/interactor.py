@@ -8,19 +8,19 @@ boundary (presenter) — it never returns a value directly.
 Dependency rule: imports only from Layer 1 (entities) and ports defined in
 the same layer. No framework, no SQLAlchemy, no HTTP.
 """
+
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from src.entities.order import Order, OrderItem
+from src.use_cases.create_order.request_model import CreateOrderRequest
 from src.use_cases.ports import (
     CreateOrderResponseModel,
     NotificationGateway,
     OutputBoundary,
     UnitOfWork,
 )
-from src.use_cases.create_order.request_model import CreateOrderRequest
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class CreateOrderInteractor:
         self,
         uow: UnitOfWork,
         presenter: OutputBoundary,
-        notifier: Optional[NotificationGateway] = None,
+        notifier: NotificationGateway | None = None,
     ) -> None:
         self._uow = uow
         self._presenter = presenter
@@ -76,7 +76,7 @@ class CreateOrderInteractor:
                 status=order.status.value,
                 total=order.total,
                 item_count=len(order.items),
-            )
+            ),
         )
 
     def _fire_notification(self, order: Order) -> None:

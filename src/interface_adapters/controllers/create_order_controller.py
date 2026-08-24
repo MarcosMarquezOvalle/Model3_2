@@ -8,10 +8,11 @@ The controller owns NO business logic. It validates data shape/types and
 converts them — nothing more. Any semantic rule ("quantity must be > 0")
 belongs in the entity.
 """
+
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
-from typing import Any, Dict, List
+from typing import Any
 
 from src.use_cases.create_order.interactor import CreateOrderInteractor
 from src.use_cases.create_order.request_model import CreateOrderRequest, OrderItemRequest
@@ -26,14 +27,14 @@ class CreateOrderController:
     def __init__(self, interactor: CreateOrderInteractor) -> None:
         self._interactor = interactor
 
-    def handle(self, raw: Dict[str, Any]) -> None:
+    def handle(self, raw: dict[str, Any]) -> None:
         """
         Parse *raw* (e.g. ``request.json`` from Flask) and invoke the use case.
         Raises ``ControllerValidationError`` for malformed payloads before the
         use case is even reached.
         """
         customer_id = self._require_str(raw, "customer_id")
-        raw_items: List[Dict[str, Any]] = self._require_list(raw, "items")
+        raw_items: list[dict[str, Any]] = self._require_list(raw, "items")
 
         items = [self._parse_item(i, idx) for idx, i in enumerate(raw_items)]
 
@@ -45,21 +46,21 @@ class CreateOrderController:
     # ------------------------------------------------------------------ #
 
     @staticmethod
-    def _require_str(data: Dict[str, Any], key: str) -> str:
+    def _require_str(data: dict[str, Any], key: str) -> str:
         value = data.get(key)
         if not isinstance(value, str) or not value.strip():
             raise ControllerValidationError(f"'{key}' must be a non-empty string")
         return value.strip()
 
     @staticmethod
-    def _require_list(data: Dict[str, Any], key: str) -> list:
+    def _require_list(data: dict[str, Any], key: str) -> list:
         value = data.get(key)
         if not isinstance(value, list) or len(value) == 0:
             raise ControllerValidationError(f"'{key}' must be a non-empty list")
         return value
 
     @staticmethod
-    def _parse_item(raw_item: Dict[str, Any], idx: int) -> OrderItemRequest:
+    def _parse_item(raw_item: dict[str, Any], idx: int) -> OrderItemRequest:
         prefix = f"items[{idx}]"
 
         product_id = raw_item.get("product_id")
@@ -75,7 +76,7 @@ class CreateOrderController:
             unit_price = Decimal(str(raw_price))
         except (InvalidOperation, TypeError):
             raise ControllerValidationError(
-                f"{prefix}.unit_price must be a valid decimal number"
+                f"{prefix}.unit_price must be a valid decimal number",
             )
 
         return OrderItemRequest(

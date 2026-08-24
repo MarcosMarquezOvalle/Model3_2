@@ -1,13 +1,16 @@
 """Unit tests for CreateOrderController — verifies parsing and validation."""
+
+from __future__ import annotations
+
 import pytest
 
-from src.interface_adapters.controllers.create_order_controller import (
-    CreateOrderController,
-    ControllerValidationError,
-)
-from src.use_cases.create_order.interactor import CreateOrderInteractor
-from src.interface_adapters.presenters.json_presenter import JsonPresenter
 from src.frameworks.db.in_memory.unit_of_work import InMemoryUnitOfWork
+from src.interface_adapters.controllers.create_order_controller import (
+    ControllerValidationError,
+    CreateOrderController,
+)
+from src.interface_adapters.presenters.json_presenter import JsonPresenter
+from src.use_cases.create_order.interactor import CreateOrderInteractor
 
 
 def _make_controller():
@@ -52,14 +55,24 @@ def test_missing_product_id_raises_validation_error():
 def test_invalid_unit_price_raises_validation_error():
     ctrl, _ = _make_controller()
     with pytest.raises(ControllerValidationError, match="unit_price"):
-        ctrl.handle({"customer_id": "c", "items": [
-            {"product_id": "sku-1", "quantity": 1, "unit_price": "not-a-number"}
-        ]})
+        ctrl.handle(
+            {
+                "customer_id": "c",
+                "items": [
+                    {"product_id": "sku-1", "quantity": 1, "unit_price": "not-a-number"},
+                ],
+            },
+        )
 
 
 def test_non_integer_quantity_raises_validation_error():
     ctrl, _ = _make_controller()
     with pytest.raises(ControllerValidationError, match="quantity"):
-        ctrl.handle({"customer_id": "c", "items": [
-            {"product_id": "sku-1", "quantity": "two", "unit_price": "1.00"}
-        ]})
+        ctrl.handle(
+            {
+                "customer_id": "c",
+                "items": [
+                    {"product_id": "sku-1", "quantity": "two", "unit_price": "1.00"},
+                ],
+            },
+        )

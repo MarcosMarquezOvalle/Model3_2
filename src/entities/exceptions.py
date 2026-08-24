@@ -1,5 +1,7 @@
 """Domain exceptions — raised by entities and re-raised by use cases."""
 
+from __future__ import annotations
+
 
 class DomainError(Exception):
     """Base class for all domain-level errors."""
