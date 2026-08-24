@@ -89,7 +89,7 @@ jobs:
             "types-sqlalchemy"
 
       - name: Run mypy
-        run: mypy src/
+        run: mypy src/ --explicit-package-bases
 
   # ── 3. Test ──────────────────────────────────────────────────────────────
   test:
